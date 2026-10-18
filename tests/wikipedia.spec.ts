@@ -16,6 +16,20 @@ test.describe('testes wikipedia', () => {
         await expect(page).toHaveTitle(/Wikipédia|Wikipedia/i);
     });
 
+  test('3 - Verificar se o campo de pesquisa está visível', async ({ page }) => {
+    const campoPesquisa = page.locator('#searchInput');
+    await expect(campoPesquisa).toBeVisible();
+ 
+  });
+  
+  test('4 - Pesquisar um artigo', async ({ page }) => {
+    const campoPesquisa = page.locator('#searchInput');
+    await campoPesquisa.fill('Brasil');
+    await campoPesquisa.press('Enter');
+    await expect(page).toHaveURL(/Brasil/);
+
+  });
+
    test('7 - O artigo Pernambuco deve abrir via URL', async ({ page }) => {
         await page.goto('/wiki/Pernambuco');
 
