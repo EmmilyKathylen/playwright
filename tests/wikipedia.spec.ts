@@ -19,7 +19,6 @@ test.describe('testes wikipedia', () => {
   test('3 - Verificar se o campo de pesquisa está visível', async ({ page }) => {
     const campoPesquisa = page.locator('#searchInput');
     await expect(campoPesquisa).toBeVisible();
- 
   });
   
   test('4 - Pesquisar um artigo', async ({ page }) => {
@@ -27,23 +26,33 @@ test.describe('testes wikipedia', () => {
     await campoPesquisa.fill('Brasil');
     await campoPesquisa.press('Enter');
     await expect(page).toHaveURL(/Brasil/);
-
   });
 
-   test('7 - O artigo Pernambuco deve abrir via URL', async ({ page }) => {
-        await page.goto('/wiki/Pernambuco');
+  test('5 - Clicar em links para outros artigos', async ({ page }) => {
+    const secao = await page.getByRole('cell', { name: 'Boas-vindas à Wikipédia, a' })
+    await secao.getByRole('link', { name: 'Wikipédia' }).click();
+    await expect(page).toHaveURL(/\/wiki\/Wikip%C3%A9dia/)
+  });
+  
+  test('6 - Passar o mouse sobre um link sem clicar deve aparecer uma prévia', async ({ page }) => {
+    await page.goto('\/wiki\/Cachorro')
+    await page.getByRole('link', {name: 'Vira-lata caramelo', exact: true}).hover();
+    await page.waitForTimeout(3500)
+  });
 
-        await expect(page).toHaveURL(/\/wiki\/Pernambuco/);
-        await expect(page.locator('h1')).toContainText('Pernambuco');
-    });
+  test('7 - O artigo Pernambuco deve abrir via URL', async ({ page }) => {
+      await page.goto('/wiki/Pernambuco');
 
-   test('8 - Deve informar quando a pesquisa não produz resultados', async ({ page }) => {
-        const pesquisa = page.locator('input[name="search"]').first();
+      await expect(page).toHaveURL(/\/wiki\/Pernambuco/);
+      await expect(page.locator('h1')).toContainText('Pernambuco');
+  });
 
-        await pesquisa.fill('Xyzqv987654artigo');
-        await pesquisa.press('Enter');
+  test('8 - Deve informar quando a pesquisa não produz resultados', async ({ page }) => {
+      const pesquisa = page.locator('input[name="search"]').first();
 
-        await expect(page.getByText('A pesquisa não produziu resultados.')).toBeVisible();
-    });
+      await pesquisa.fill('Xyzqv987654artigo');
+      await pesquisa.press('Enter');
 
+      await expect(page.getByText('A pesquisa não produziu resultados.')).toBeVisible();
+  });
 });
