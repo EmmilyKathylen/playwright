@@ -26,9 +26,11 @@ test.describe('testes wikipedia', () => {
     await campoPesquisa.fill('Brasil');
     await campoPesquisa.press('Enter');
     await expect(page).toHaveURL(/Brasil/);
+
+    await expect(page.locator('h1')).toContainText('Brasil');
   });
 
-  test('5 - Clicar em links para outros artigos', async ({ page }) => {
+  test('5 - Clicar em um link para outros artigos', async ({ page }) => {
     const secao = page.getByRole('cell', { name: 'Boas-vindas à Wikipédia, a' })
     await secao.getByRole('link', { name: 'Wikipédia' }).click();
     await expect(page).toHaveURL(/\/wiki\/Wikip%C3%A9dia/)
@@ -41,20 +43,20 @@ test.describe('testes wikipedia', () => {
     await expect(previa).toBeVisible()
   });
 
-  test('7 - O artigo Pernambuco deve abrir via URL', async ({ page }) => {
+  test('7 - Acessar artigo via URL', async ({ page }) => {
     await page.goto('/wiki/Pernambuco');
 
-    await expect(page).toHaveURL(/\/wiki\/Pernambuco/);
+    await expect(page).toHaveURL(/wiki\/Pernambuco/);
     await expect(page.locator('h1')).toContainText('Pernambuco');
   });
 
   test('8 - Deve informar quando a pesquisa não produz resultados', async ({ page }) => {
-    const pesquisa = page.locator('input[name="search"]').first();
+    const pesquisa = page.locator('#searchInput');
 
-    await pesquisa.fill('Xyzqv987654artigo');
+    await pesquisa.fill('Xyzqv987654ar');
     await pesquisa.press('Enter');
 
-    await expect(page.getByText('A pesquisa não produziu resultados.')).toBeVisible();
+    await expect(page.getByText('A pesquisa não produziu resultados')).toBeVisible();
   });
 
   test('9 - Url "/wiki/Especial:Aleatória" mostra artigos diferentes', async ({ page }) => {
