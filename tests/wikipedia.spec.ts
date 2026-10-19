@@ -29,7 +29,7 @@ test.describe('testes wikipedia', () => {
   });
 
   test('5 - Clicar em links para outros artigos', async ({ page }) => {
-    const secao = await page.getByRole('cell', { name: 'Boas-vindas à Wikipédia, a' })
+    const secao = page.getByRole('cell', { name: 'Boas-vindas à Wikipédia, a' })
     await secao.getByRole('link', { name: 'Wikipédia' }).click();
     await expect(page).toHaveURL(/\/wiki\/Wikip%C3%A9dia/)
   });
@@ -37,22 +37,44 @@ test.describe('testes wikipedia', () => {
   test('6 - Passar o mouse sobre um link sem clicar deve aparecer uma prévia', async ({ page }) => {
     await page.goto('\/wiki\/Cachorro')
     await page.getByRole('link', {name: 'Vira-lata caramelo', exact: true}).hover();
-    await page.waitForTimeout(3500)
+    const previa = page.locator('.mwe-popups')
+    await expect(previa).toBeVisible()
   });
 
   test('7 - O artigo Pernambuco deve abrir via URL', async ({ page }) => {
-      await page.goto('/wiki/Pernambuco');
+    await page.goto('/wiki/Pernambuco');
 
-      await expect(page).toHaveURL(/\/wiki\/Pernambuco/);
-      await expect(page.locator('h1')).toContainText('Pernambuco');
+    await expect(page).toHaveURL(/\/wiki\/Pernambuco/);
+    await expect(page.locator('h1')).toContainText('Pernambuco');
   });
 
   test('8 - Deve informar quando a pesquisa não produz resultados', async ({ page }) => {
-      const pesquisa = page.locator('input[name="search"]').first();
+    const pesquisa = page.locator('input[name="search"]').first();
 
-      await pesquisa.fill('Xyzqv987654artigo');
-      await pesquisa.press('Enter');
+    await pesquisa.fill('Xyzqv987654artigo');
+    await pesquisa.press('Enter');
 
-      await expect(page.getByText('A pesquisa não produziu resultados.')).toBeVisible();
+    await expect(page.getByText('A pesquisa não produziu resultados.')).toBeVisible();
   });
+
+  test('9 - Url "/wiki/Especial:Aleatória" mostra artigos diferentes', async ({ page }) => {
+    for (let i = 0; i < 3; i++) {
+      await page.goto('/wiki/Especial:Aleatória')
+      await expect(page).not.toHaveURL(/Especial:Aleat/);
+      await expect(page.locator('h1')).toBeVisible()
+
+      if (i<2){
+        await page.waitForTimeout(3000)
+    }
+    }
+  })
+
+  test('10 - Trocar o idioma também troca a url', async ({ page }) => {
+    await page.goto('/wiki/Computador')
+    await page.getByRole('button', {name:'248 idiomas'}).click()
+    const secao_idiomas = await page.getByRole('listbox', { name: 'Todos os idiomas' })
+    await secao_idiomas.getByRole('option', {name: 'English'}).click()
+    await expect(page).toHaveURL(/en.wikipedia/)
+  })
 });
+
