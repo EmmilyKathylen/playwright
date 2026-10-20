@@ -68,6 +68,10 @@ Visual Studio Code: editor utilizado no desenvolvimento.
 
 Git e GitHub: ferramentas utilizadas para versionamento e compartilhamento do código.
 
+## Captura de Tela da Página de Referência
+
+A página utilizada como referência para a criação dos testes foi a Wikipédia em português.
+
 ![alt text](image.png)
 
 
@@ -81,20 +85,13 @@ Git e GitHub: ferramentas utilizadas para versionamento e compartilhamento do c�
 
 No terminal, dentro da pasta do projeto, execute:
 
-npm install
+'npm install'
+'npm install -D @playwright/test'
+'npx playwright install'
 
-Executar os testes
+### Executar os testes
 
-Para executar todos os testes do projeto:
+Para executar somente os testes da Wikipédia
 
-npx playwright test
-
-Para executar somente os testes da Wikipédia, caso o arquivo esteja em tests/wikipedia.spec.ts:
-
-npx playwright test tests/wikipedia.spec.ts
-
-Visualizar o relatório
-
-Após a execução, para abrir o relatório HTML do Playwright:
-
-npx playwright show-report
+'npx playwright test tests/wikipedia.spec.ts' ou
+'npx playwright test --ui' 
