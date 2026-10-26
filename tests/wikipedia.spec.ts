@@ -69,7 +69,7 @@ test.describe('testes wikipedia', () => {
         await page.waitForTimeout(3000)
     }
     }
-  })
+  });
 
   test('10 - Trocar o idioma também troca a url', async ({ page }) => {
     await page.goto('/wiki/Computador')
